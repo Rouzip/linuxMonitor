@@ -12,6 +12,6 @@ def receive(request):
     print(request)
     data = simplejson.load(request.raw_post_data)
     print(data)
-    mp = MessagePackage( data.mtype, data.host_name, data.host_situation)
+    mp = MessagePackage(data.mtype, data.host_name,data.memery,  data.cpu, data.process)
     dealWebsocket.send(mp)
     return HttpResponse()
