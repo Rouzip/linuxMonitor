@@ -1,5 +1,6 @@
 from django.http import HttpResponse
 from dwebsocket import *
+import multiprocessing
 
 
 vue_request = HttpResponse
@@ -12,7 +13,7 @@ def echo(request):
         message = request.websocket.wait()
         print(message)
         vue_request = request.websocket
-        request.websocket.send(message)
+        send(message)
 
 
 def send(message_package):
