@@ -1,7 +1,4 @@
-from django.http import HttpRequest
 from django.http import HttpResponse
-from dwebsocket.decorators import accept_websocket
-from . import MessagePackage
 from dwebsocket import *
 
 
