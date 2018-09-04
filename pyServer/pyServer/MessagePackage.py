@@ -1,7 +1,7 @@
-import simpleJson
+import simplejson
 
 
-class MessagPackage:
+class MessagePackage:
     mtype = ""
     host_name = ""
     memery = ""
@@ -17,4 +17,4 @@ class MessagPackage:
 
     def to_json(self):
         dictionary = {'type': self.mtype, 'host_name': self.host_name, 'cpu': self.cpu, 'memery': self.memery, 'process': self.process}
-        return simpleJson.load(dictionary)
+        return simplejson.load(dictionary)
