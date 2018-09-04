@@ -15,14 +15,15 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from . import view
+from . import dealHttp
 from django.conf.urls import url
-from . import websocket
+from . import dealWebsocket
 
 urlpatterns = [
-    # path('admin/', admin.site.urls),
-    url(r'^$', view.hello),
-    url(r'testConnect', view.testConnect),
-    url(r'websocket', websocket.echo)
+    # http请求
+    url(r'^$', dealHttp.hello),
+    url(r'^data$', dealHttp.receive),
+    # websocket请求
+    url(r'websocket', dealWebsocket.echo)
 ]
 
