@@ -49,6 +49,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+
 ROOT_URLCONF = 'pyServer.urls'
 
 TEMPLATES = [
@@ -118,3 +119,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
 
 STATIC_URL = '/static/'
+
+WEBSOCKET_ACCEPT_ALL=True
+
+MIDDLEWARE_CLASSES=['dwebsocket.middleware.WebSocketMiddleware']
