@@ -3,7 +3,7 @@ from dwebsocket import *
 import multiprocessing
 
 
-vue_request = HttpResponse
+vue_request = []
 
 
 @accept_websocket
@@ -12,10 +12,10 @@ def echo(request):
     while True:
         message = request.websocket.wait()
         print(message)
-        vue_request = request.websocket
-        send(message)
+        vue_request.append(request.websocket)
+        send(message, [request.websocket])
 
 
-def send(message_package):
-    global vue_request
-    vue_request.send(message_package)
+def send(message_package, socket_client=vue_request):
+    for client in socket_client:
+        client.send(message_package)
