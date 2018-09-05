@@ -4,7 +4,7 @@ import uuid
 import time
 
 
-node = uuid.getnode()
+# node = uuid.getnode()
 
 
 class MessagePackage:
@@ -32,8 +32,17 @@ class MessagePackage:
         return simplejson.load(dictionary)
 
     def generate_hostuuid(self):
-        self.host_id = uuid.uuid1(node+(random.random()*100000000))
+        self.host_id = str(uuid.uuid1(uuid.getnode()+(int)(random.random()*100000)))
+        return str(self.host_id)
 
+    @classmethod
     def generate_timestamp(self):
         localtime = time.localtime()
-        self.timestamp = '%02d' % localtime[3] + '-%02d' % localtime[4] + '-%02d' % localtime[5]
+        self.timestamp = '%02d' % localtime[4] + '-%02d' % localtime[5]
+
+    def get_uuid(self):
+        return self.host_id
+
+    @classmethod
+    def generate_uuid(cls):
+        return str(uuid.uuid1(uuid.getnode()+(int)(random.random()*100000)))

@@ -25,7 +25,7 @@ SECRET_KEY = 'y@t36drvw*-^zma$)#(*)@h7p*5olmliyg_51jd(pwp=_j*(06'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['192.168.43.30', '192.168.43.252', 'localhost']
 
 
 # Application definition
@@ -40,13 +40,12 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
-    'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+
 ]
 
 
@@ -122,4 +121,4 @@ STATIC_URL = '/static/'
 
 WEBSOCKET_ACCEPT_ALL=True
 
-MIDDLEWARE_CLASSES=['dwebsocket.middleware.WebSocketMiddleware']
+MIDDLEWARE_CLASSES=['dwebsocket.middleware.WebSocketMiddleware', 'pyServer.DisableCSRF.DisableCSRF']

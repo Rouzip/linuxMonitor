@@ -23,6 +23,8 @@ urlpatterns = [
     # http请求
     url(r'^hello$', dealHttp.hello),
     url(r'^data$', dealHttp.receive),
+    url(r'^post$', dealHttp.post),
+
     url(r'^$', dealHttp.receive),
     # websocket请求
     url(r'websocket', dealWebsocket.echo)
