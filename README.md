@@ -19,8 +19,44 @@
 
 ### 人员任务分配
 
-linux：宋博文、毕涛
+linux：毕涛
 
 windows：王浩东、樊培源
 
 测试：张威威
+
+前端，组长：宋博文
+
+### protocal
+
+```json
+# 前后端交互协议
+# 为每个linux主机启动不同的定时器，即异步处理
+# 默认百分数没有百分号
+{
+    type: 'create/warn/message',  # 不可为空，必填
+    time: 'hh-mm-ss',  # 不可为空，必填，服务器接受时间
+    hostid: 'uuid',  # 默认不重复
+    hostname:'',  # 主机名字
+    cpu: '',  # cpu使用量，百分数(数字)
+    mem: '',  # 内存占用百分比，百分数(数字)
+    processes: process[]  # 程序列表
+}
+
+# 进程格式
+{
+    id: 'pid',  # 字符串
+    name: '',  # 程序的指令名字
+    mem: '',  # 内存占用量，百分比
+    cpu: ''  # cpu占用量，百分比
+}
+
+# 杀死某个linux上的特定进程
+{
+    id: 'pid',
+    'hostid': 'uuid'
+}
+
+# linux与windows交互协议
+```
+

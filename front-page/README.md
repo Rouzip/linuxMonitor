@@ -19,3 +19,10 @@ npm run build
 ```
 npm run lint
 ```
+
+### Todolist
+
+1. websocket是否使用原生
+2. 页面布局
+3. 使用jest进行单元测试
+4. 使用element-UI进行组件编写
