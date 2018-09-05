@@ -1,14 +1,19 @@
 <template>
   <div id="app">
-    <div id="nav">
-      <!-- <router-link to="/nav"></router-link> -->
-    </div>
-    <div id="main">
-      <!-- <router-link to="/board">Home</router-link>  -->
-    </div>
-    <!-- <router-view/> -->
+    <router-view></router-view>
   </div>
 </template>
+
+<script lang="ts">
+import Vue from 'vue';
+
+export default Vue.extend({
+  created() {
+    this.$router.push('/');
+  },
+});
+</script>
+
 
 <style>
 #app {

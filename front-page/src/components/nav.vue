@@ -17,7 +17,7 @@ import Component from 'vue-class-component';
 
 @Component
 export default class NavMenu extends Vue {
-  handleSelect(index: any, indexPath: any): void {
+  public handleSelect(index: any, indexPath: any): void {
     console.log(index, indexPath);
   }
 }

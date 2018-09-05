@@ -2,6 +2,7 @@ import Vue from 'vue';
 import Vuex from 'vuex';
 
 import { Ilinux, Iprocess } from './declare';
+import { Package, StorePackage } from '@/util';
 
 Vue.use(Vuex);
 
@@ -12,28 +13,24 @@ Vue.use(Vuex);
  */
 class LinuxSnapShot implements Ilinux {
   [index: number]: Ilinux;
-
-  public active: boolean[]; // 是否活跃
-  public id: string; // 主机id
-  public name: string; // 主机名
-  public cpu: number; // cpu使用数据
-  public mem: number; // 内存使用量
+  public time: string; // 不可为空，服务器时间，hh-mm-ss
+  public hostname: string; // linux主机名
+  public cpu: number; // cpu占用百分比
+  public mem: number; // 内存占用百分比
   public processes: Iprocess[]; // 程序列表
 
-  constructor(l: Ilinux) {
-    this.id = l.id;
-    this.name = l.name;
-    this.cpu = l.cpu;
-    this.mem = l.mem;
-    this.processes = l.processes;
-    this.active = [];
-    this.processes.forEach((_) => this.active.push(true));
+  constructor(obj: Package) {
+    this.time = obj.time;
+    this.hostname = obj.hostname;
+    this.cpu = obj.cpu;
+    this.mem = obj.mem;
+    this.processes = obj.processes;
   }
 }
 
 export default new Vuex.Store({
   state: {
-    linuxs: Object, // 储存所有主机信息，以主机id作为键值，值为snapshot
+    linuxs: new Map<string, StorePackage[]>(), // 储存所有主机信息，以主机id作为键值，值为snapshot
   },
   mutations: {
     removeLinux(state, id: string): void {
@@ -54,5 +51,7 @@ export default new Vuex.Store({
       Object.defineProperty(state.linuxs, id, linux);
     },
   },
-  actions: {},
+  actions: {
+    // TODO: 重新绘图
+  },
 });

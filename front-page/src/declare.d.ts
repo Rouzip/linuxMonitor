@@ -1,23 +1,18 @@
-import { hostname } from 'os';
-
 // 从websocket传输的时候linux格式
-export interface Ipackage {
+export interface Ipackage extends Ilinux {
   [index: number]: Ipackage;
   type: string; // 不可为空
-  time: string; // 不可为空，服务器时间，hh-mm-ss
-  hostid: string; // 默认不重复
+
+  hostid: string; // 默认不重复，message重要
   hostname: string; // linux主机名
-  cpu: number; // cpu占用百分比
-  mem: number; // 内存占用百分比
-  processes: Iprocess[]; // 程序列表
 }
 
+// 基本数据定义
 export interface Ilinux {
   [index: number]: Ilinux;
-  id: string; // 主机id，为了区分同名的linux主机，不显示给用户
-  name: string; // 主机名
-  cpu: number; // cpu使用数据
-  mem: number; // 内存使用量
+  time: string; // 不可为空，服务器时间，mm-ss
+  cpu: number; // cpu占用百分比
+  mem: number; // 内存占用量
   processes: Iprocess[]; // 程序列表
 }
 
@@ -28,12 +23,4 @@ export interface Iprocess {
   name: string; // 程序名
   mem: number; // 程序占用内存
   cpu: number; // 程序消耗cpu量
-}
-
-// store中存储格式
-export interface IlinuxShot {
-  [index: number]: IlinuxShot;
-  cpu: number; // cpu使用数据
-  mem: number; // 内存使用量
-  processes: Iprocess[]; // 程序列表
 }

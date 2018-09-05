@@ -12,12 +12,6 @@ import { Component, Prop, Vue } from 'vue-property-decorator';
 @Component
 export default class Board extends Vue {
   @Prop() private msg!: string;
-
-  created() {
-    const WEBSOCKETURL = 'ws://localhost:8000';
-    const wsocket = new WebSocket(WEBSOCKETURL);
-    this.$store.state.linux;
-  }
 }
 </script>
 
