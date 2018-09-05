@@ -30,3 +30,9 @@
 *.exe
 *.out
 *.app
+
+
+# 忽略idea配置文件 与 python cache
+/pyServer/.idea/*
+/pyServer/__pycache__/*.pyc
+
