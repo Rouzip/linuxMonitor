@@ -5,7 +5,7 @@
               background-color="#1e679e">
       <el-menu-item v-for="linux in this.$store.state.linuxs" 
                     :key="linux">
-        {{ linux.name }}
+        {{ linux }}
       </el-menu-item>
     </el-menu>
   </div>

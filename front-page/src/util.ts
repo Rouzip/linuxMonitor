@@ -33,25 +33,6 @@ export class Package extends Serialization implements Ipackage {
     super();
     this.fillFromJSON(json);
   }
-
-  // 查询数据为哪个类型
-  public dataCheck(): boolean {
-    switch (this.type) {
-      case 'create':
-        console.log('create');
-        break;
-      case 'warn':
-        console.log('warn');
-        break;
-      case 'message':
-        console.log('message');
-        break;
-      default:
-        console.log('error');
-        return false;
-    }
-    return true;
-  }
 }
 
 /**
