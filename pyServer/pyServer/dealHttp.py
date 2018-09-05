@@ -3,6 +3,14 @@ import simplejson
 from . import MessagePackage
 from . import dealWebsocket
 import multiprocessing
+from django.shortcuts import render
+from django.views.decorators import csrf
+from django.http import HttpResponse
+from django.template.loader import get_template
+from django.template import Context
+from django.template import RequestContext
+from django.shortcuts import render_to_response
+
 
 pool = multiprocessing.Pool(processes=5)
 
@@ -22,3 +30,8 @@ def deal_message(request):
     print(data)
     mp = MessagePackage(data.mtype, data.host_name, data.memery, data.cpu, data.process)
     dealWebsocket.send(mp)
+
+
+def post(request):
+    print(request.body)
+    return HttpResponse("200")
