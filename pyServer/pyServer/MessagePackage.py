@@ -25,6 +25,7 @@ class MessagePackage:
         self.generate_hostuuid()
         self.generate_timestamp()
 
+
     def to_json(self):
         dictionary = {'type': self.mtype, 'time': self.timestamp,
                       'hostid': self.host_id, 'hostname': self.host_name,
@@ -32,7 +33,7 @@ class MessagePackage:
         return simplejson.dumps(dictionary)
 
     def generate_hostuuid(self):
-        self.host_id = str(uuid.uuid1(uuid.getnode()+(int)(random.random()*100000)))
+        self.host_id = str(uuid.uuid3(uuid.NAMESPACE_DNS, self.host_name))
 
     def generate_timestamp(self):
         localtime = time.localtime()
@@ -42,5 +43,5 @@ class MessagePackage:
         return self.host_id
 
     @classmethod
-    def generate_uuid(cls):
-        return str(uuid.uuid1(uuid.getnode()+(int)(random.random()*100000)))
+    def generate_uuid(cls, host_name):
+        return str(uuid.uuid3(uuid.NAMESPACE_DNS, host_name))

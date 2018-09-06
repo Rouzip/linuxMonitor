@@ -16,6 +16,7 @@ def deal_accpet():
         print('连接地址：', addr)
         buff = client.recv(1024)
         print("接收到" + str(buff))
+        # 接收到的消息为linux主机首次连接消息
         buff = buff.decode().replace("\n", "")
         data = simplejson.loads(str(buff))
         print("json化" + str(data))
@@ -32,13 +33,16 @@ def deal_receive(client):
     while True:
         buff = client.recv(2048)
         print("接收到" + str(buff))
-        buff = buff.decode().replace("\n", "").replace(",]", "]")
-        data = simplejson.loads(buff)
-        print("json化" + str(data))
-        mp = MessagePackage.MessagePackage('update', data['host_name'],
-                                           data['memInfo'], data['cpuUser'],
-                                           eval(str(data['processInfo']))
-                                           )
+        if 'a' == buff[0]:      # 接收到的消息为连接活确认
+            mp = MessagePackage.MessagePackage('warn', buff.decode().s[1:])
+        else:                   # 接收到的消息为linux主机状态信息
+            buff = buff.decode().replace("\n", "").replace(",]", "]")
+            data = simplejson.loads(buff)
+            print("json化" + str(data))
+            mp = MessagePackage.MessagePackage('update', data['host_name'],
+                                               data['memInfo'], data['cpuUser'],
+                                               eval(str(data['processInfo']))
+                                               )
         response = requests.post(url='http://127.0.0.1:8000/post',
                                  headers={'Content-Type': 'application/json'},
                                  data=mp.to_json())
@@ -66,6 +70,16 @@ def deal_order():
             time.sleep(2000)
 
 
+def check_alive():
+    global clients
+    while True:
+        if 0 == len(clients):
+            time.sleep(2000)
+        else:
+            for client in clients:
+                client.sendall("")  # 客户端'活'检查
+
+
 if __name__ == '__main__':
     s = socket.socket()
     host = socket.gethostname()
@@ -75,5 +89,6 @@ if __name__ == '__main__':
     print("start TCP server")
     threading.Thread(target=deal_accpet).start()
     threading.Thread(target=deal_order).start()
+    threading.Thread(target=check_alive).start()
 
 
