@@ -8,17 +8,19 @@ vue_request = []
 @accept_websocket
 def echo(request):
     global vue_request
+    vue_request.append(request.websocket)
+    print("get a websocket connect")
     while True:
         message = request.websocket.wait()
         print(message)
         deal_kill_order(message)
-        vue_request.append(request.websocket)
-        send(message, [request.websocket])
+        # send(message, [request.websocket])
 
 
-def send(message_package, socket_client=vue_request):
-    for client in socket_client:
-        client.send(message_package)
+def send(message_package):
+    global vue_request
+    for client in vue_request:
+        client.send(message_package.encode(encoding="utf8"))
 
 
 def deal_kill_order(message):

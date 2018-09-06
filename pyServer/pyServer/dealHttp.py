@@ -34,5 +34,5 @@ def deal_message(request):
 
 def post(request):
     print(str(request.body))
-    dealWebsocket.send(str(request.body))
+    dealWebsocket.send(request.body.decode())
     return HttpResponse("200")

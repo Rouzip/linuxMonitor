@@ -40,7 +40,7 @@ def deal_receive(client):
         #             mp.set_uuid(key)
             data = simplejson.loads(buff)
             # print("json化" + str(data))
-            mp = MessagePackage.MessagePackage('update', data['host_name'],
+            mp = MessagePackage.MessagePackage('message', data['host_name'],
                                                data['memInfo'], data['cpuUser'],
                                                eval(str(data['processInfo']))
                                                )
@@ -49,14 +49,16 @@ def deal_receive(client):
                                  data=mp.to_json())
         # print("响应200 = " + str(response))
         except Exception as e:
-            print("sssss")
+            print("sssss" + e)
             for key in clients:
                 if clients[key] == client:
+                    print("here")
                     mp = MessagePackage.MessagePackage('warn')
                     mp.set_uuid(key)
                     response = requests.post(url='http://127.0.0.1:8000/post',
                                              headers={'Content-Type': 'application/json'},
                                              data=mp.to_json())
+                    # print("响应200 = " + str(response))
             break
 
 
