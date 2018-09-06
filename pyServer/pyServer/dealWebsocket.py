@@ -22,10 +22,9 @@ def send(message_package, socket_client=vue_request):
 
 
 def deal_kill_order(message):
-    data = simplejson.dumps(message)
+    data = simplejson.loads(message)
     try:
-        file_handler = open("./order.txt", 'w')
-        file_handler.write(data.uuid+"\n"+data.pid)
-        file_handler.close()
+        with open("D:\git\linuxMonitor\pyServer\pyServer\order.txt", 'a+') as file_handler:
+            file_handler.write(data['uuid']+"\n"+data['pid'])
     except exec:
         print("file write failed")
