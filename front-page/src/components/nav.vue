@@ -1,24 +1,55 @@
 <template>
-  <div id="top">
-    <el-menu @select="handleSelect"
-              mode="horizontal"
-              background-color="#1e679e">
-      <el-menu-item v-for="linux in this.$store.state.linuxs" 
-                    :key="linux">
+  <!-- <el-menu @select="handleSelect"
+            mode="horizontal"
+            active-text-color="#409EFF"
+            class="left-board">
+    <el-submenu index="1" style="width:100%">
+      <template slot="title">
+        <i class="el-icon-location"></i>
+        <span slot="title">主机列表</span>
+      </template>
+    <el-menu-item v-for="linux in getStateLinuxs" 
+                  :key="linux"
+                  :index="linux"
+                  class="item">
         {{ linux }}
-      </el-menu-item>
-    </el-menu>
-  </div>
+    </el-menu-item>
+    </el-submenu>
+  </el-menu> -->
+  <el-menu @select="handleSelect">
+    <h3>主机列表</h3>
+    <el-menu-item v-for="(value, key) in getStateLinuxs" 
+                  :key="key" 
+                  :index="key"
+                  class="item">
+      <i class="el-icon-setting"></i>
+      <span slot="title"> {{ value }} </span>
+    </el-menu-item>
+  </el-menu>
+
+  
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
 import Component from 'vue-class-component';
+import { Prop, Watch } from 'vue-property-decorator';
+import { StorePackage } from '@/util';
 
 @Component
 export default class NavMenu extends Vue {
-  public handleSelect(index: any, indexPath: any): void {
-    console.log(index, indexPath);
+  public handleSelect(index: any): void {
+    this.$store.commit('showLinuxStatus', index);
+  }
+
+  public get getStateLinuxs() {
+    return this.$store.state.linuxs;
   }
 }
 </script>
+
+<style scoped>
+.item {
+  border-radius: 800px 800px 800px 800px;
+}
+</style>

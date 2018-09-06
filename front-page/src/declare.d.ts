@@ -23,4 +23,5 @@ export interface Iprocess {
   name: string; // 程序名
   mem: number; // 程序占用内存
   cpu: number; // 程序消耗cpu量
+  auth: boolean; // 是否有权限杀进程
 }

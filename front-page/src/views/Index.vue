@@ -3,7 +3,9 @@
     <el-aside class="aside">
       <nav-menu></nav-menu>
     </el-aside>
-    <el-main class="main">Main</el-main>
+    <el-main class="main">
+      <board></board>
+    </el-main>
   </el-container>
 </template>
 
@@ -35,22 +37,20 @@ export default class IndexView extends Vue {
     wsocket.onmessage = (event) => {
       let dataOri: Package = new Package(event.data);
       let arr: StorePackage[] =
-        this.$store.state.linuxs.get(dataOri.hostid) || [];
+        this.$store.state.items.get(dataOri.hostid) || [];
       // TODO: 判断消息类型
       switch (dataOri.type) {
         case 'create':
-          // 第一次收到消息，将主机信息填充为0
-          let datas = [];
-          for (let i = 0; i < 10; i++) {
-            datas.push(new StorePackage({}));
-          }
-          // this.$store.state.linuxs[dataOri.hostid] = datas;
-          this.$store.state.linuxs.set(dataOri.hostid, datas);
-          console.log(this.$store.state.linuxs);
-          for (const i in this.$store.state.linuxs.keys()) {
-            console.log(i);
-          }
-          // Vue.set(this.$store.state.linuxs, dataOri.hostid, datas);
+          this.$store.dispatch({
+            type: 'addLinux',
+            id: dataOri.hostid,
+            linuxName: dataOri.hostname,
+          });
+          this.$notify({
+            title: '通知',
+            message: `您的主机${dataOri.hostname}已上线`,
+            type: 'success',
+          });
           break;
         case 'message':
           // FIXME: 这里默认收到的message里面主机id都已经上线了
@@ -82,11 +82,5 @@ export default class IndexView extends Vue {
 <style scoped>
 .home {
   height: 100%;
-}
-.aside {
-  background-color: aqua;
-}
-.main {
-  background-color: blueviolet;
 }
 </style>
