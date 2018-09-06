@@ -14,7 +14,6 @@ def echo(request):
         message = request.websocket.wait()
         print(message)
         deal_kill_order(message)
-        # send(message, [request.websocket])
 
 
 def send(message_package):

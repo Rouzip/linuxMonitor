@@ -4,8 +4,6 @@ import uuid
 import time
 
 
-# node = uuid.getnode()
-
 
 class MessagePackage:
     mtype = ""

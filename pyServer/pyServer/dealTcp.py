@@ -33,11 +33,8 @@ def deal_receive(client):
     while True:
         try:
             buff = client.recv(2048)
-            b = buff == None
-            print("接收到" + str(type(buff)) + buff.decode() + str(b))
+            print("接收到" + str(type(buff)) + buff.decode())
             buff = buff.decode().replace("\n", "").replace(",]", "]")
-        #             mp = MessagePackage.MessagePackage('warn')
-        #             mp.set_uuid(key)
             data = simplejson.loads(buff)
             # print("json化" + str(data))
             mp = MessagePackage.MessagePackage('message', data['host_name'],
@@ -83,19 +80,6 @@ def deal_order():
         except exec:
             time.sleep(2000)
 
-
-# def check_alive():
-#     global clients
-#     while True:
-#         print("here" + str(len(clients)))
-#         time.sleep(3)
-#         if 0 == len(clients):
-#             time.sleep(2)
-#         else:
-#             for key in clients:
-#                 clients[key].sendall(b"_")  # 客户端'活'检查
-
-
 if __name__ == '__main__':
     s = socket.socket()
     s.setsockopt(socket.SOL_SOCKET, socket.SO_KEEPALIVE, 1)
@@ -106,7 +90,6 @@ if __name__ == '__main__':
     print("start TCP server")
     threading.Thread(target=deal_accpet).start()
     threading.Thread(target=deal_order).start()
-    # threading.Thread(target=check_alive).start()
 
 
 
