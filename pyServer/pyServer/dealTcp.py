@@ -32,14 +32,16 @@ def deal_receive(client):
     while True:
         buff = client.recv(2048)
         print("接收到" + str(buff))
-        buff = buff.decode().replace("\n", "")
-        data = simplejson.loads(str(buff))
+        buff = buff.decode().replace("\n", "").replace(",]", "]")
+        data = simplejson.loads(buff)
         print("json化" + str(data))
         mp = MessagePackage.MessagePackage('update', data['host_name'],
                                            data['memInfo'], data['cpuUser'],
                                            eval(str(data['processInfo']))
                                            )
-        response = requests.post('http://127.0.0.1:8000/post', data=mp)
+        response = requests.post(url='http://127.0.0.1:8000/post',
+                                 headers={'Content-Type': 'application/json'},
+                                 data=mp.to_json())
         # print("响应200 = " + str(response))
 
 

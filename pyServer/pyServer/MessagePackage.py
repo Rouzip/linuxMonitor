@@ -29,7 +29,7 @@ class MessagePackage:
         dictionary = {'type': self.mtype, 'time': self.timestamp,
                       'hostid': self.host_id, 'hostname': self.host_name,
                       'cpu': self.cpu, 'mem': self.memery, 'process': self.process}
-        return dictionary
+        return simplejson.dumps(dictionary)
 
     def generate_hostuuid(self):
         self.host_id = str(uuid.uuid1(uuid.getnode()+(int)(random.random()*100000)))
