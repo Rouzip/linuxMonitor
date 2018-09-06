@@ -16,23 +16,20 @@ class MessagePackage:
     process = ""
     timestamp = ""
 
-    def __init__(self, mtype, host_name, memery, cpu, process, uuid=None):
+    def __init__(self, mtype, host_name, memery=None, cpu=None, process=None):
         self.mtype = mtype
         self.host_name = host_name
         self.memery = memery
         self.cpu = cpu
         self.process = process
-        if uuid == None:
-            self.generate_hostuuid()
-        else:
-            self.host_id = uuid
+        self.generate_hostuuid()
         self.generate_timestamp()
 
     def to_json(self):
         dictionary = {'type': self.mtype, 'time': self.timestamp,
                       'hostid': self.host_id, 'hostname': self.host_name,
                       'cpu': self.cpu, 'mem': self.memery, 'process': self.process}
-        return simplejson.load(dictionary)
+        return dictionary
 
     def generate_hostuuid(self):
         self.host_id = str(uuid.uuid1(uuid.getnode()+(int)(random.random()*100000)))

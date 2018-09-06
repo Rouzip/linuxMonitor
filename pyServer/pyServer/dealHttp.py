@@ -33,5 +33,5 @@ def deal_message(request):
 
 
 def post(request):
-    print(request.body)
+    print(str(request.body))
     return HttpResponse("200")

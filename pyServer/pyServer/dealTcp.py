@@ -14,6 +14,16 @@ def deal_accpet():
     while True:
         client, addr = s.accept()
         print('连接地址：', addr)
+        buff = client.recv(1024)
+        print("接收到" + str(buff))
+        buff = buff.decode().replace("\n", "")
+        data = simplejson.loads(str(buff))
+        print("json化" + str(data))
+        mp = MessagePackage.MessagePackage('create', data['host_name'])
+        global clients
+        clients[mp.get_uuid()] = client
+        response = requests.post('http://127.0.0.1:8000/post', data=mp.to_json())
+        # print("响应200 = " + str(response))
         threading.Thread(target=deal_receive, args=[client]).start()
 
 
@@ -22,15 +32,15 @@ def deal_receive(client):
     while True:
         buff = client.recv(2048)
         print("接收到" + str(buff))
-        data = eval(str(buff).replace("\n", ""))
-        print("json化"+ str(data))
+        buff = buff.decode().replace("\n", "")
+        data = simplejson.loads(str(buff))
+        print("json化" + str(data))
         mp = MessagePackage.MessagePackage('update', data['host_name'],
                                            data['memInfo'], data['cpuUser'],
                                            eval(str(data['processInfo']))
                                            )
-        clients[mp.get_uuid()] = client
         response = requests.post('http://127.0.0.1:8000/post', data=mp)
-        print("响应200 = " + response)
+        # print("响应200 = " + str(response))
 
 
 def deal_order():
