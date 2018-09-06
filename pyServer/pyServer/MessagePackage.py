@@ -16,13 +16,16 @@ class MessagePackage:
     process = ""
     timestamp = ""
 
-    def __init__(self, mtype, host_name, memery, cpu, process):
+    def __init__(self, mtype, host_name, memery, cpu, process, uuid=None):
         self.mtype = mtype
         self.host_name = host_name
         self.memery = memery
         self.cpu = cpu
         self.process = process
-        self.generate_hostuuid()
+        if uuid == None:
+            self.generate_hostuuid()
+        else:
+            self.host_id = uuid
         self.generate_timestamp()
 
     def to_json(self):

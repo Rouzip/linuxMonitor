@@ -10,18 +10,24 @@ import threading
 clients = {}
 
 
-def deal_receive():
+def deal_accpet():
     while True:
         client, addr = s.accept()
         print('连接地址：', addr)
+        threading.Thread(target=deal_receive, args=[client]).start()
+
+
+def deal_receive(client):
+    print("deal_receive(client)")
+    while True:
         buff = client.recv(2048)
-        print("接收到"+str(buff))
-        # client.send(b"wang wang wang")
-        data = simplejson.load(dict(buff))
-        print("json化"+data)
-        mp = MessagePackage.MessagePackage(data['type'], data['host_name'],
-                                           data['memery'], data['cpu'],
-                                           data['process'])
+        print("接收到" + str(buff))
+        data = eval(str(buff).replace("\n", ""))
+        print("json化"+ str(data))
+        mp = MessagePackage.MessagePackage('update', data['host_name'],
+                                           data['memInfo'], data['cpuUser'],
+                                           eval(str(data['processInfo']))
+                                           )
         clients[mp.get_uuid()] = client
         response = requests.post('http://127.0.0.1:8000/post', data=mp)
         print("响应200 = " + response)
@@ -54,8 +60,8 @@ if __name__ == '__main__':
     port = 8124
     s.bind(("192.168.43.30", port))
     s.listen(5)
-    print("start server")
-    threading.Thread(target=deal_receive).start()
+    print("start TCP server")
+    threading.Thread(target=deal_accpet).start()
     threading.Thread(target=deal_order).start()
 
 
