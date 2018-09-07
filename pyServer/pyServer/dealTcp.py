@@ -36,17 +36,23 @@ def deal_receive(client):
             print("接收到" + str(type(buff)) + buff.decode())
             buff = buff.decode().replace("\n", "").replace(",]", "]")
             data = simplejson.loads(buff)
+            process_info = eval(str(data['processInfo']))
+            for pro_info in process_info:
+                if pro_info['user'] == "root":
+                    pro_info['auth'] = False
+                else:
+                    pro_info['auth'] = True
             # print("json化" + str(data))
             mp = MessagePackage.MessagePackage('message', data['host_name'],
                                                data['memInfo'], data['cpuUser'],
-                                               eval(str(data['processInfo']))
+                                               process_info
                                                )
             response = requests.post(url='http://127.0.0.1:8000/post',
                                  headers={'Content-Type': 'application/json'},
                                  data=mp.to_json())
         # print("响应200 = " + str(response))
         except Exception as e:
-            print("sssss" + e)
+            print("sssss")
             for key in clients:
                 if clients[key] == client:
                     print("here")
