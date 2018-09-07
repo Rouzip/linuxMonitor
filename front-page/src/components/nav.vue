@@ -1,21 +1,4 @@
 <template>
-  <!-- <el-menu @select="handleSelect"
-            mode="horizontal"
-            active-text-color="#409EFF"
-            class="left-board">
-    <el-submenu index="1" style="width:100%">
-      <template slot="title">
-        <i class="el-icon-location"></i>
-        <span slot="title">主机列表</span>
-      </template>
-    <el-menu-item v-for="linux in getStateLinuxs" 
-                  :key="linux"
-                  :index="linux"
-                  class="item">
-        {{ linux }}
-    </el-menu-item>
-    </el-submenu>
-  </el-menu> -->
   <el-menu @select="handleSelect">
     <h3>主机列表</h3>
     <el-menu-item v-for="(value, key) in getStateLinuxs" 
@@ -39,7 +22,7 @@ import { StorePackage } from '@/util';
 @Component
 export default class NavMenu extends Vue {
   public handleSelect(index: any): void {
-    this.$store.commit('showLinuxStatus', index);
+    this.$store.dispatch('selectLinux', index);
   }
 
   public get getStateLinuxs() {

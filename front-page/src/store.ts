@@ -6,28 +6,6 @@ import { Package, StorePackage } from '@/util';
 
 Vue.use(Vuex);
 
-/**
- * @author Rouzip
- * @class 每一个linux主机的一个时间状态的记录
- * TODO: 如何将快照，linux传输的数据对应起来
- */
-class LinuxSnapShot implements Ilinux {
-  [index: number]: Ilinux;
-  public time: string; // 不可为空，服务器时间，hh-mm-ss
-  public hostname: string; // linux主机名
-  public cpu: number; // cpu占用百分比
-  public mem: number; // 内存占用百分比
-  public processes: Iprocess[]; // 程序列表
-
-  constructor(obj: Package) {
-    this.time = obj.time;
-    this.hostname = obj.hostname;
-    this.cpu = obj.cpu;
-    this.mem = obj.mem;
-    this.processes = obj.processes;
-  }
-}
-
 export default new Vuex.Store({
   state: {
     items: new Map<string, StorePackage[]>(), // 储存所有主机信息，以主机id作为键值，值为snapshot
@@ -37,6 +15,24 @@ export default new Vuex.Store({
   getters: {
     activeLinuxData: (state) => {
       return state.items.get(state.active);
+    },
+    times: (state) => {
+      const LinuxDatas = state.items.get(state.active);
+      if (LinuxDatas !== undefined) {
+        return LinuxDatas.map((item) => item.time);
+      }
+    },
+    mems: (state) => {
+      const LinuxDatas = state.items.get(state.active);
+      if (LinuxDatas !== undefined) {
+        return LinuxDatas.map((item) => item.mem);
+      }
+    },
+    cpus: (state) => {
+      const LinuxDatas = state.items.get(state.active);
+      if (LinuxDatas !== undefined) {
+        return LinuxDatas.map((item) => item.cpu);
+      }
     },
   },
   mutations: {
@@ -53,15 +49,7 @@ export default new Vuex.Store({
     //   }, {});
     //   return undefined;
     // },
-    initLinux(state, id) {
-      // 初始化主机状态，第一次收到消息，将主机信息填充为0
-      const datas = [];
-      for (let i = 0; i < 10; i++) {
-        datas.push(new StorePackage({}));
-      }
-      state.items.set(id, datas);
-    },
-    showLinuxStatus(state, id: string) {
+    changeShowLinuxStatus(state, id: string) {
       state.active = id;
     },
     changeData(state, { id, newData }) {
@@ -81,13 +69,27 @@ export default new Vuex.Store({
         state.items.set(id, data);
       }
     },
+    initItems(state, { id, datas }) {
+      state.items.set(id, datas);
+    },
   },
   actions: {
-    addLinux({ state, commit }, { id, linuxName }) {
-      // 添加主机
+    initLinux({ commit }, id) {
+      // 初始化主机状态，第一次收到消息，将主机信息填充为0
+      const datas = [];
+      for (let i = 0; i < 10; i++) {
+        datas.push(new StorePackage({}));
+      }
+      commit('initItems', { id, datas });
+    },
+    addLinux({ state, dispatch }, { id, linuxName }) {
+      // 添加主机id与主机名映射
       Vue.set(state.linuxs, id, linuxName);
-      commit('initLinux', id);
-      // state.linuxs.set('123', linux);
+      dispatch('initLinux', id);
+    },
+    selectLinux({ commit }, id) {
+      // 选择查看主机
+      commit('changeShowLinuxStatus', id);
     },
     // 删除某个主机，从nav中删除
     async removeLinux({ state }) {},

@@ -28,6 +28,7 @@ import { Ipackage, Ilinux } from '@/declare';
 })
 export default class IndexView extends Vue {
   public created() {
+    // const WEBSOCKETURL = 'ws://192.168.43.30:8000/websocket'
     const WEBSOCKETURL = 'ws://localhost:8000';
     // 展示数组长度
     const LENGTH = 10;
@@ -55,7 +56,7 @@ export default class IndexView extends Vue {
         case 'message':
           // FIXME: 这里默认收到的message里面主机id都已经上线了
           let linuxShot: StorePackage = new StorePackage(event.data);
-          let tmpArray = this.$store.state.linuxs[dataOri.hostid];
+          let tmpArray = this.$store.state.items[dataOri.hostid];
           tmpArray.shift();
           tmpArray.push(linuxShot);
           Vue.set(this.$store.state.linuxs, dataOri.hostid, tmpArray);
