@@ -102,27 +102,34 @@ export default class MemChart extends Vue {
     return this.$store.state.memlabel;
   }
 
-  mounted() {
-    this.myChart = echarts.init(<HTMLDivElement>document.getElementById('mem'));
+  public mounted() {
+    this.myChart = echarts.init(document.getElementById(
+      'mem',
+    ) as HTMLDivElement);
     const that = this;
     // 监听窗口大小改变事件，动态地调整图大小
     window.addEventListener('resize', () => {
-      if (that.myChart !== undefined) that.myChart.resize(); //初始化的
+      if (that.myChart !== undefined) {
+        // 初始化
+        that.myChart.resize();
+      }
     });
   }
 
   @Watch('getMemLabel')
-  changeTab() {
-    if (this.myChart !== undefined) this.myChart.resize();
+  public changeTab() {
+    if (this.myChart !== undefined) {
+      this.myChart.resize();
+    }
   }
 
   @Watch('getMem')
-  draw() {
+  public draw() {
     if (this.myChart === undefined) {
       // TODO:没可能走这条分支的
-      this.myChart = echarts.init(<HTMLDivElement>document.getElementById(
+      this.myChart = echarts.init(document.getElementById(
         'mem',
-      ));
+      ) as HTMLDivElement);
       this.myChart.setOption(this.option);
     } else {
       // 有激活数据或者第一次传入数据，跟随父组件大小

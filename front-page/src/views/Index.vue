@@ -34,15 +34,15 @@ export default class IndexView extends Vue {
 
   public created() {
     this.wsocket.onmessage = (event: any) => {
-      let dataOri: Package = new Package(event.data);
-      let linuxId: string = dataOri.hostid;
-      let linuxName: string = dataOri.hostname;
+      const dataOri: Package = new Package(event.data);
+      const linuxId: string = dataOri.hostid;
+      const linuxName: string = dataOri.hostname;
       switch (dataOri.type) {
         case 'create':
           this.$store.dispatch({
             type: 'addLinux',
             id: linuxId,
-            linuxName: linuxName,
+            linuxName,
           });
           this.$notify({
             title: '通知',
@@ -53,7 +53,7 @@ export default class IndexView extends Vue {
         case 'message':
           // FIXME: 这里默认收到的message里面主机id都已经上线了
           // 解析数据，改变数据
-          let linuxShot: StorePackage = new StorePackage(event.data);
+          const linuxShot: StorePackage = new StorePackage(event.data);
           this.$store.dispatch({
             type: 'getData',
             id: linuxId,
@@ -63,7 +63,7 @@ export default class IndexView extends Vue {
         case 'warn':
           this.$notify.error({
             title: '错误',
-            message: `您的主机${dataOri.hostname}出现问题`,
+            message: `您的主机${linuxName}出现问题`,
           });
           // 需要使nav中无法选择这个主机
           // TODO: 向nav发送事件，使得其不可选中

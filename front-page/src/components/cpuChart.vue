@@ -98,27 +98,34 @@ export default class CpuChart extends Vue {
     return this.$store.state.cpulabel;
   }
 
-  mounted() {
-    this.myChart = echarts.init(<HTMLDivElement>document.getElementById('cpu'));
+  public mounted() {
+    this.myChart = echarts.init(document.getElementById(
+      'cpu',
+    ) as HTMLDivElement);
     const that = this;
     // 监听窗口大小改变事件，动态地调整图大小
     window.addEventListener('resize', () => {
-      if (that.myChart !== undefined) that.myChart.resize(); //初始化的
+      if (that.myChart !== undefined) {
+        // 初始化
+        that.myChart.resize();
+      }
     });
   }
 
   @Watch('getCpuLabel')
-  changeTab() {
-    if (this.myChart !== undefined) this.myChart.resize();
+  public changeTab() {
+    if (this.myChart !== undefined) {
+      this.myChart.resize();
+    }
   }
 
   @Watch('getCpu')
-  draw() {
+  public draw() {
     if (this.myChart === undefined) {
       // TODO:没可能走这条分支的
-      this.myChart = echarts.init(<HTMLDivElement>document.getElementById(
+      this.myChart = echarts.init(document.getElementById(
         'cpu',
-      ));
+      ) as HTMLDivElement);
       this.myChart.setOption(this.option);
     } else {
       // 有激活数据或者第一次传入数据，跟随父组件大小
