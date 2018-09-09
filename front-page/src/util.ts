@@ -1,5 +1,8 @@
 import { Ipackage, Iprocess, Ilinux } from './declare';
 
+/**
+ * @class 解包虚基类，从收到的包中结构对象
+ */
 abstract class Serialization {
   [index: string]: any;
 
@@ -46,6 +49,28 @@ export class StorePackage extends Serialization implements Ilinux {
   public cpu: number = 0; // cpu占用百分比
   public mem: number = 0; // 内存占用百分比
   public processes: Iprocess[] = []; // 程序列表
+
+  constructor(json: any | {}) {
+    super();
+    // 如果是空数据，为创建数据
+    if (Object.keys(json).length === 0) {
+      return;
+    }
+    this.fillFromJSON(json);
+  }
+}
+
+/**
+ * @class 结构传送包中的进程
+ */
+export class StoreProcess extends Serialization implements Iprocess {
+  [index: number]: Iprocess;
+
+  public id: string = ''; // 程序pid
+  public name: string = ''; // 程序名
+  public mem: number = 0; // 程序占用内存
+  public cpu: number = 0; // 程序消耗cpu量
+  public auth: boolean = false; // 是否有权限杀进程
 
   constructor(json: any | {}) {
     super();

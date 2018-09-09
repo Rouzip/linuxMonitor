@@ -11,29 +11,24 @@ export default new Vuex.Store({
     items: new Map<string, StorePackage[]>(), // 储存所有主机信息，以主机id作为键值，值为snapshot
     linuxs: {}, // 主机id与主机名映射
     active: '', // 显示主机列表
-  },
-  getters: {
-    activeLinuxData: (state) => {
-      return state.items.get(state.active);
-    },
-    times: (state) => {
-      const LinuxDatas = state.items.get(state.active);
-      if (LinuxDatas !== undefined) {
-        return LinuxDatas.map((item) => item.time);
-      }
-    },
-    mems: (state) => {
-      const LinuxDatas = state.items.get(state.active);
-      if (LinuxDatas !== undefined) {
-        return LinuxDatas.map((item) => item.mem);
-      }
-    },
-    cpus: (state) => {
-      const LinuxDatas = state.items.get(state.active);
-      if (LinuxDatas !== undefined) {
-        return LinuxDatas.map((item) => item.cpu);
-      }
-    },
+    memlabel: true,
+    cpulabel: false,
+    processlabel: false,
+    times: [
+      '00-00',
+      '00-00',
+      '00-00',
+      '00-00',
+      '00-00',
+      '00-00',
+      '00-00',
+      '00-00',
+      '00-00',
+      '00-00',
+    ],
+    mems: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    cpus: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    processes: [] as Iprocess[],
   },
   mutations: {
     // removeLinux(state, id: string): void {
@@ -55,22 +50,100 @@ export default new Vuex.Store({
     changeData(state, { id, newData }) {
       const data: StorePackage[] | undefined = state.items.get(id);
       if (data === undefined) {
+        // FIXME: 不可能走这个分支
         // 警告的机子又有新数据
         const tmp: StorePackage[] = [];
         for (let i = 0; i < 9; i++) {
           tmp.push(new StorePackage({}));
         }
         tmp.push(newData);
+        // Vue.set(state.items, id, newData);
         state.items.set(id, tmp);
       } else {
         // 去除旧数据，换为新数据
         data.shift();
         data.push(newData);
-        state.items.set(id, data);
+        Vue.set(state.items, id, data);
+        // state.items.set(id, data);
+      }
+    },
+    changeActiveTimes(state, { linuxid, time }) {
+      if (linuxid === state.active) {
+        state.times.shift();
+        state.times.push(time);
+      }
+    },
+    changeActiveMems(state, { linuxid, mem }) {
+      if (linuxid === state.active) {
+        state.mems.shift();
+        state.mems.push(mem);
+      }
+    },
+    changeActiveCpus(state, { linuxid, cpu }) {
+      if (linuxid === state.active) {
+        state.cpus.shift();
+        state.cpus.push(cpu);
+      }
+    },
+    changeActiveProcesses(state, { linuxid, processes }) {
+      if (linuxid === state.active) {
+        const length = state.processes.length;
+        for (let i = 0; i < length; i++) {
+          state.processes.pop();
+        }
+        for (const item of processes) {
+          state.processes.push(item);
+        }
       }
     },
     initItems(state, { id, datas }) {
       state.items.set(id, datas);
+    },
+    changeLinuxTime(state, id) {
+      // 从数据集中找到对应主机数据
+      const items = state.items.get(id);
+      // 由于服务器保证已经create，所以这列不会为空
+      if (items !== undefined) {
+        const times: string[] = [];
+        items.map((item) => times.push(item.time));
+        state.times = times;
+      }
+    },
+    changeLinuxMem(state, id) {
+      // 从数据集中找到对应主机数据
+      const items = state.items.get(id);
+      if (items !== undefined) {
+        const mems: number[] = [];
+        items.map((item) => mems.push(item.mem));
+        state.mems = mems;
+      }
+    },
+    changeLinuxCpu(state, id) {
+      // 从数据集中找到对应主机数据
+      const items = state.items.get(id);
+      if (items !== undefined) {
+        const cpus: number[] = [];
+        items.map((item) => cpus.push(item.cpu));
+        state.cpus = cpus;
+      }
+    },
+    changeTab(state, index) {
+      state.memlabel = false;
+      state.cpulabel = false;
+      state.processlabel = false;
+      switch (index) {
+        case '0':
+          state.memlabel = true;
+          break;
+        case '1':
+          state.cpulabel = true;
+          break;
+        case '2':
+          state.processlabel = true;
+          break;
+        default:
+          break;
+      }
     },
   },
   actions: {
@@ -87,13 +160,26 @@ export default new Vuex.Store({
       Vue.set(state.linuxs, id, linuxName);
       dispatch('initLinux', id);
     },
-    selectLinux({ commit }, id) {
+    async selectLinux({ commit }, id) {
+      // TODO: 改变主机时间数据，mem数据，cpu数据，进程数据
+      await commit('changeLinuxTime', id);
+      await commit('changeLinuxMem', id);
+      await commit('changeLinuxCpu', id);
       // 选择查看主机
       commit('changeShowLinuxStatus', id);
     },
     // 删除某个主机，从nav中删除
     async removeLinux({ state }) {},
     // 获取数据之后，改动某个主机的数据，重新绘图
-    async getData({ state }) {},
+    async getData({ commit }, { id, newData }) {
+      commit('changeData', { id, newData });
+      commit('changeActiveTimes', { linuxid: id, time: newData.time });
+      commit('changeActiveMems', { linuxid: id, mem: newData.mem });
+      commit('changeActiveCpus', { linuxid: id, cpu: newData.cpu });
+      commit('changeActiveProcesses', {
+        linuxid: id,
+        processes: newData.processes,
+      });
+    },
   },
 });

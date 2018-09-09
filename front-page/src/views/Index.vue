@@ -30,22 +30,19 @@ export default class IndexView extends Vue {
   public created() {
     // const WEBSOCKETURL = 'ws://192.168.43.30:8000/websocket'
     const WEBSOCKETURL = 'ws://localhost:8000';
-    // 展示数组长度
-    const LENGTH = 10;
 
     const wsocket = new WebSocket(WEBSOCKETURL);
 
     wsocket.onmessage = (event) => {
       let dataOri: Package = new Package(event.data);
-      let arr: StorePackage[] =
-        this.$store.state.items.get(dataOri.hostid) || [];
-      // TODO: 判断消息类型
+      let linuxId: string = dataOri.hostid;
+      let linuxName: string = dataOri.hostname;
       switch (dataOri.type) {
         case 'create':
           this.$store.dispatch({
             type: 'addLinux',
-            id: dataOri.hostid,
-            linuxName: dataOri.hostname,
+            id: linuxId,
+            linuxName: linuxName,
           });
           this.$notify({
             title: '通知',
@@ -55,11 +52,13 @@ export default class IndexView extends Vue {
           break;
         case 'message':
           // FIXME: 这里默认收到的message里面主机id都已经上线了
+          // 解析数据，改变数据
           let linuxShot: StorePackage = new StorePackage(event.data);
-          let tmpArray = this.$store.state.items[dataOri.hostid];
-          tmpArray.shift();
-          tmpArray.push(linuxShot);
-          Vue.set(this.$store.state.linuxs, dataOri.hostid, tmpArray);
+          this.$store.dispatch({
+            type: 'getData',
+            id: linuxId,
+            newData: linuxShot,
+          });
           break;
         case 'warn':
           this.$notify.error({
@@ -67,14 +66,9 @@ export default class IndexView extends Vue {
             message: `您的主机${dataOri.hostname}出现问题`,
           });
           break;
-
         default:
           break;
       }
-
-      // arr.shift();
-      // arr.push(linux);
-      // let arr: Ilinux[] = this.$store.state.linux[dataOri.hostid];
     };
   }
 }
