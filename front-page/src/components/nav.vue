@@ -4,7 +4,8 @@
     <el-menu-item v-for="(value, key) in getStateLinuxs" 
                   :key="key" 
                   :index="key"
-                  class="item">
+                  class="item"
+                  :disabled=getDisable(key)>
       <i class="el-icon-setting"></i>
       <span slot="title"> {{ value }} </span>
     </el-menu-item>
@@ -27,6 +28,10 @@ export default class NavMenu extends Vue {
 
   public get getStateLinuxs() {
     return this.$store.state.linuxs;
+  }
+
+  public getDisable(id: string) {
+    return this.$store.state.disable[id];
   }
 }
 </script>

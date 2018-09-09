@@ -1,13 +1,17 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
 
-import { Ilinux, Iprocess } from './declare';
-import { Package, StorePackage } from '@/util';
+import { Iprocess } from './declare';
+import { StorePackage } from '@/util';
 
 Vue.use(Vuex);
 
+// const WEBSOCKETURL = 'ws://192.168.43.30:8000/websocket'
+const WEBSOCKETURL = 'ws://localhost:8000';
+
 export default new Vuex.Store({
   state: {
+    websocket: new WebSocket(WEBSOCKETURL),
     items: new Map<string, StorePackage[]>(), // 储存所有主机信息，以主机id作为键值，值为snapshot
     linuxs: {}, // 主机id与主机名映射
     active: '', // 显示主机列表
@@ -29,28 +33,21 @@ export default new Vuex.Store({
     mems: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     cpus: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     processes: [] as Iprocess[],
+    disable: {},
   },
   mutations: {
-    // removeLinux(state, id: string): void {
-    //   // fp拆包进行删除属性
-    //   Object.entries(state.linuxs).reduce((newObj: {}, [key, val]) => {
-    //     if (id in Object.keys(state.linuxs)) {
-    //       return newObj;
-    //     }
-    //     return {
-    //       ...newObj,
-    //       [key]: val,
-    //     };
-    //   }, {});
-    //   return undefined;
-    // },
+    removeLinux(state, id: string): void {
+      // TODO: 如何从nav中使其对应disable
+      Vue.delete(state.linuxs, id);
+      Vue.delete(state.items, id);
+    },
     changeShowLinuxStatus(state, id: string) {
       state.active = id;
     },
     changeData(state, { id, newData }) {
       const data: StorePackage[] | undefined = state.items.get(id);
       if (data === undefined) {
-        // FIXME: 不可能走这个分支
+        // FIXME: 不可能走这个分支，确定契约后删除
         // 警告的机子又有新数据
         const tmp: StorePackage[] = [];
         for (let i = 0; i < 9; i++) {
@@ -145,6 +142,9 @@ export default new Vuex.Store({
           break;
       }
     },
+    changeDisable(state, id) {
+      Vue.set(state.disable, id, true);
+    },
   },
   actions: {
     initLinux({ commit }, id) {
@@ -158,18 +158,16 @@ export default new Vuex.Store({
     addLinux({ state, dispatch }, { id, linuxName }) {
       // 添加主机id与主机名映射
       Vue.set(state.linuxs, id, linuxName);
+      Vue.set(state.disable, id, false);
       dispatch('initLinux', id);
     },
     async selectLinux({ commit }, id) {
-      // TODO: 改变主机时间数据，mem数据，cpu数据，进程数据
       await commit('changeLinuxTime', id);
       await commit('changeLinuxMem', id);
       await commit('changeLinuxCpu', id);
       // 选择查看主机
       commit('changeShowLinuxStatus', id);
     },
-    // 删除某个主机，从nav中删除
-    async removeLinux({ state }) {},
     // 获取数据之后，改动某个主机的数据，重新绘图
     async getData({ commit }, { id, newData }) {
       commit('changeData', { id, newData });

@@ -19,6 +19,7 @@ import NavMenu from '@/components/nav.vue';
 // 工具函数部分
 import { Package, StorePackage } from '@/util';
 import { Ipackage, Ilinux } from '@/declare';
+import { setInterval } from 'timers';
 
 @Component({
   components: {
@@ -27,13 +28,12 @@ import { Ipackage, Ilinux } from '@/declare';
   },
 })
 export default class IndexView extends Vue {
+  public get wsocket() {
+    return this.$store.state.websocket;
+  }
+
   public created() {
-    // const WEBSOCKETURL = 'ws://192.168.43.30:8000/websocket'
-    const WEBSOCKETURL = 'ws://localhost:8000';
-
-    const wsocket = new WebSocket(WEBSOCKETURL);
-
-    wsocket.onmessage = (event) => {
+    this.wsocket.onmessage = (event: any) => {
       let dataOri: Package = new Package(event.data);
       let linuxId: string = dataOri.hostid;
       let linuxName: string = dataOri.hostname;
@@ -65,6 +65,14 @@ export default class IndexView extends Vue {
             title: '错误',
             message: `您的主机${dataOri.hostname}出现问题`,
           });
+          // 需要使nav中无法选择这个主机
+          // TODO: 向nav发送事件，使得其不可选中
+          this.$store.commit('changeDisable', dataOri.hostid);
+          // 60s之后删除
+          // TODO: 不知道之后是继续发，还是重新create
+          setInterval(() => {
+            console.log(dataOri.hostid);
+          }, 60000);
           break;
         default:
           break;

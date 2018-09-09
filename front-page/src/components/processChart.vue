@@ -9,17 +9,20 @@
           fixed="left"
           label="pid"
           prop="id"
-          width="100px">
+          width="150px"
+          align="left">
         </el-table-column>
         <el-table-column
           label="内存占用量(%)"
           prop="mem"
-          width="100px">
+          width="150px"
+          align="left">
         </el-table-column>
         <el-table-column
           label="CPU占用量(%)"
           prop="cpu"
-          width="100px">
+          width="150px"
+          align="left">
         </el-table-column>
         <el-table-column
           label="进程名"
@@ -144,6 +147,10 @@ export default class ProcessChart extends Vue {
     ],
   };
 
+  public get wsocket() {
+    return this.$store.state.websocket;
+  }
+
   public get getProcessLabel() {
     return this.$store.state.processlabel;
   }
@@ -218,8 +225,13 @@ export default class ProcessChart extends Vue {
     }
   }
 
-  public handleKill(a: any) {
-    console.log(a);
+  public handleKill(pid: string) {
+    this.wsocket.send(
+      JSON.stringify({
+        id: pid,
+        hostid: this.$store.state.active,
+      }),
+    );
   }
 }
 </script>
