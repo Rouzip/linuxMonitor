@@ -27,7 +27,7 @@ class MessagePackage:
     def to_json(self):
         dictionary = {'type': self.mtype, 'time': self.timestamp,
                       'hostid': self.host_id, 'hostname': self.host_name,
-                      'cpu': self.cpu, 'mem': self.memery, 'process': self.process}
+                      'cpu': self.cpu, 'mem': self.memery, 'processes': self.process}
         return simplejson.dumps(dictionary)
 
     def generate_hostuuid(self):

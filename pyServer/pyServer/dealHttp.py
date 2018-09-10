@@ -10,7 +10,7 @@ from django.template.loader import get_template
 from django.template import Context
 from django.template import RequestContext
 from django.shortcuts import render_to_response
-
+from django.shortcuts import render
 
 pool = multiprocessing.Pool(processes=5)
 
@@ -28,7 +28,8 @@ def deal_message(request):
     print(request)
     data = simplejson.load(request.raw_post_data)
     print(data)
-    mp = MessagePackage(data.mtype, data.host_name, data.memery, data.cpu, data.process)
+    mp = MessagePackage(data.mtype, data.host_name, data.memery,
+                        data.cpu, data.process)
     dealWebsocket.send(mp)
 
 
@@ -36,3 +37,13 @@ def post(request):
     print(str(request.body))
     dealWebsocket.send(request.body.decode())
     return HttpResponse("200")
+
+
+def index(request):
+    return render(request, "index.html", {})
+
+
+def wang(request):
+    return render(request, "wang.html", {})
+
+

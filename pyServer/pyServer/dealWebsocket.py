@@ -23,9 +23,10 @@ def send(message_package):
 
 
 def deal_kill_order(message):
+    print("##" +  str(message))
     data = simplejson.loads(message)
     try:
         with open("D:\git\linuxMonitor\pyServer\pyServer\order.txt", 'a+') as file_handler:
-            file_handler.write(data['uuid']+"\n"+data['pid'])
+            file_handler.write(data['hostid']+"\n"+data['id'])
     except exec:
         print("file write failed")

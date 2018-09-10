@@ -3,6 +3,7 @@ import simplejson
 import os
 import pyServer.MessagePackage as MessagePackage
 import time
+import logging
 import requests
 import threading
 
@@ -32,7 +33,7 @@ def deal_accpet():
 def deal_receive(client):
     while True:
         try:
-            buff = client.recv(2048)
+            buff = client.recv(40960)
             print("接收到" + str(type(buff)) + buff.decode())
             buff = buff.decode().replace("\n", "").replace(",]", "]")
             data = simplejson.loads(buff)
@@ -52,10 +53,9 @@ def deal_receive(client):
                                  data=mp.to_json())
         # print("响应200 = " + str(response))
         except Exception as e:
-            print("sssss")
+            logging.exception(e)
             for key in clients:
                 if clients[key] == client:
-                    print("here")
                     mp = MessagePackage.MessagePackage('warn')
                     mp.set_uuid(key)
                     response = requests.post(url='http://127.0.0.1:8000/post',
@@ -72,17 +72,17 @@ def deal_order():
                 with open("./temp_order.txt", "a+") as tempfile_handler:
                     lines = file_handler.readlines()
                     if 0 == len(lines):
-                        time.sleep(2000)
+                        time.sleep(2)
                         continue
-                    uuid = file_handler.readline()
-                    pid = file_handler.readline()
+                    uuid = lines[0].replace("\n", "")
+                    pid = lines[1].replace("\n", "")
                     del lines[0:2]
                     for line in lines:
                         tempfile_handler.writelines(line)
             os.remove('order.txt')
             os.rename("temp_order.txt", 'order.txt')
-            print("kill process " + uuid + " " + pid)
-            clients[uuid].sendall(pid)
+            print("## kill process " + uuid + " " + pid)
+            clients[uuid].sendall(bytes(pid, encoding="utf8"))
         except exec:
             time.sleep(2000)
 
