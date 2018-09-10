@@ -6,8 +6,8 @@ import { StorePackage } from '@/util';
 
 Vue.use(Vuex);
 
-// const WEBSOCKETURL = 'ws://192.168.43.30:8000/websocket'
-const WEBSOCKETURL = 'ws://localhost:8000';
+const WEBSOCKETURL = 'ws://192.168.43.30:8000/websocket';
+// const WEBSOCKETURL = 'ws://localhost:8000';
 
 export default new Vuex.Store({
   state: {
@@ -34,12 +34,13 @@ export default new Vuex.Store({
     cpus: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     processes: [] as Iprocess[],
     disable: {},
+    deleteId: new Map<string, number>(),
   },
   mutations: {
     removeLinux(state, id: string): void {
-      // TODO: 如何从nav中使其对应disable
       Vue.delete(state.linuxs, id);
       Vue.delete(state.items, id);
+      state.deleteId.delete(id);
     },
     changeShowLinuxStatus(state, id: string) {
       state.active = id;
@@ -47,7 +48,6 @@ export default new Vuex.Store({
     changeData(state, { id, newData }) {
       const data: StorePackage[] | undefined = state.items.get(id);
       if (data === undefined) {
-        // FIXME: 不可能走这个分支，确定契约后删除
         // 警告的机子又有新数据
         const tmp: StorePackage[] = [];
         for (let i = 0; i < 9; i++) {
@@ -61,7 +61,6 @@ export default new Vuex.Store({
         data.shift();
         data.push(newData);
         Vue.set(state.items, id, data);
-        // state.items.set(id, data);
       }
     },
     changeActiveTimes(state, { linuxid, time }) {
@@ -145,6 +144,17 @@ export default new Vuex.Store({
     changeDisable(state, id) {
       Vue.set(state.disable, id, true);
     },
+    checkDelete(state, id: string) {
+      // 检查是否有定时器可以删除
+      const linuxid = state.deleteId.get(id);
+      if (linuxid !== undefined) {
+        clearTimeout(linuxid);
+        state.deleteId.delete(id);
+      }
+    },
+    addDelete(state, { linuxid, timeid }) {
+      state.deleteId.set(linuxid, timeid);
+    },
   },
   actions: {
     initLinux({ commit }, id) {
@@ -155,10 +165,11 @@ export default new Vuex.Store({
       }
       commit('initItems', { id, datas });
     },
-    addLinux({ state, dispatch }, { id, linuxName }) {
+    addLinux({ state, dispatch, commit }, { id, linuxName }) {
       // 添加主机id与主机名映射
       Vue.set(state.linuxs, id, linuxName);
       Vue.set(state.disable, id, false);
+      commit('checkDelete', id);
       dispatch('initLinux', id);
     },
     async selectLinux({ commit }, id) {

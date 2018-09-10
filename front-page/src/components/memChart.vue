@@ -126,7 +126,6 @@ export default class MemChart extends Vue {
   @Watch('getMem')
   public draw() {
     if (this.myChart === undefined) {
-      // TODO:没可能走这条分支的
       this.myChart = echarts.init(document.getElementById(
         'mem',
       ) as HTMLDivElement);

@@ -44,7 +44,7 @@ export default class CpuChart extends Vue {
       max: 9,
     },
     yAxis: {
-      name: '内存大小/KB',
+      name: 'CPU占用量',
     },
     series: [
       {

@@ -20,7 +20,6 @@ abstract class Serialization {
 
 /**
  * @class 监听websocket，数据解包
- * TODO: 删除无用的数据
  */
 export class Package extends Serialization implements Ipackage {
   [index: number]: Ipackage;
@@ -40,7 +39,6 @@ export class Package extends Serialization implements Ipackage {
 
 /**
  * @class 储存在映射表中的数据
- * TODO: 删除无用的数据
  */
 export class StorePackage extends Serialization implements Ilinux {
   [index: number]: Ilinux;

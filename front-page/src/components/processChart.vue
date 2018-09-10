@@ -10,7 +10,8 @@
           label="pid"
           prop="id"
           width="150px"
-          align="left">
+          align="left"
+          sortable>
         </el-table-column>
         <el-table-column
           label="内存占用量(%)"
@@ -212,7 +213,6 @@ export default class ProcessChart extends Vue {
   @Watch('getCpuData')
   public draw() {
     if (this.myChart === undefined) {
-      // TODO:没可能走这条分支的
       this.myChart = echarts.init(document.getElementById(
         'cpu',
       ) as HTMLDivElement);
@@ -221,6 +221,8 @@ export default class ProcessChart extends Vue {
       // 有激活数据或者第一次传入数据，跟随父组件大小
       this.myChart.resize();
       // watcher无法监控data改变，所以只能重新赋值
+      console.log(this.getMemData);
+      console.log(this.getCpuData);
       this.option.series[0].data = this.getMemData;
       this.option.series[1].data = this.getCpuData;
       this.option.legend.data = this.getName;
