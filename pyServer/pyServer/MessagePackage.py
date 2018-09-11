@@ -4,7 +4,6 @@ import uuid
 import time
 
 
-
 class MessagePackage:
     mtype = ""
     host_name = ""
@@ -22,7 +21,6 @@ class MessagePackage:
         self.process = process
         self.generate_hostuuid()
         self.generate_timestamp()
-
 
     def to_json(self):
         dictionary = {'type': self.mtype, 'time': self.timestamp,

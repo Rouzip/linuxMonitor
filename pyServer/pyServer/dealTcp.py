@@ -11,6 +11,7 @@ import threading
 clients = {}
 dead_client = {}
 
+
 def deal_accpet():
     while True:
         client, addr = s.accept()
@@ -26,6 +27,7 @@ def deal_accpet():
         global clients
         clients[mp.get_uuid()] = client
         response = requests.post('http://127.0.0.1:8000/post', data=mp.to_json())
+        response = requests.post('http://127.0.0.1:8000/connect', data=mp.to_json())
         # print("响应200 = " + str(response))
         threading.Thread(target=deal_receive, args=[client]).start()
 
@@ -33,10 +35,11 @@ def deal_accpet():
 def deal_receive(client):
     while True:
         try:
-            buff = client.recv(40960)
+            buff = client.recv(409600)
             print("接收到" + str(type(buff)) + buff.decode())
             buff = buff.decode().replace("\n", "").replace(",]", "]")
             data = simplejson.loads(buff)
+
             process_info = eval(str(data['processInfo']))
             for pro_info in process_info:
                 if pro_info['user'] == "root":
@@ -51,18 +54,26 @@ def deal_receive(client):
             response = requests.post(url='http://127.0.0.1:8000/post',
                                  headers={'Content-Type': 'application/json'},
                                  data=mp.to_json())
-        # print("响应200 = " + str(response))
-        except Exception as e:
-            logging.exception(e)
-            for key in clients:
-                if clients[key] == client:
-                    mp = MessagePackage.MessagePackage('warn')
-                    mp.set_uuid(key)
-                    response = requests.post(url='http://127.0.0.1:8000/post',
-                                             headers={'Content-Type': 'application/json'},
-                                             data=mp.to_json())
-                    # print("响应200 = " + str(response))
-            break
+            # print("响应200 = " + str(response))
+        except simplejson.errors.JSONDecodeError as a:
+            if buff == '':
+                for key in clients:
+                    if clients[key] == client:
+                        mp = MessagePackage.MessagePackage('warn')
+                        mp.set_uuid(key)
+                        response = requests.post(url='http://127.0.0.1:8000/post',
+                                                 headers={'Content-Type': 'application/json'},
+                                                 data=mp.to_json())
+                        response = requests.post(url='http://127.0.0.1:8000/disconnect',
+                                                 headers={'Content-Type': 'application/json'},
+                                                 data=mp.to_json())
+                        # print("响应200 = " + str(response))
+                break
+            else:
+                continue
+
+
+
 
 
 def deal_order():

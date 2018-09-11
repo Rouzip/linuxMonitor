@@ -28,7 +28,8 @@ urlpatterns = [
     url(r'^post$', dealHttp.post),
     url(r'^index$', dealHttp.index),
     url(r'^$', dealHttp.index),
-    url(r'^wang$', dealHttp.wang),
+    url(r'^disconnect$', dealHttp.disconnect),
+    url(r'^connect$', dealHttp.connect),
     # 静态资源配置
     # url( r'^static/(?P<path>.*)$', 'django.views.static.serve',{ 'document_root': settings.STATIC_URL }),
     url(r'^$', dealHttp.receive),
