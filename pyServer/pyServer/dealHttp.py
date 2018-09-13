@@ -12,8 +12,10 @@ from django.template import RequestContext
 from django.shortcuts import render_to_response
 from django.shortcuts import render
 
+
 pool = multiprocessing.Pool(processes=5)
 connect_post = {}
+
 
 
 def hello(request):

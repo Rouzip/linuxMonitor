@@ -4,6 +4,8 @@ import uuid
 import time
 
 
+
+
 class MessagePackage:
     mtype = ""
     host_name = ""
@@ -33,6 +35,7 @@ class MessagePackage:
             return
         self.host_id = str(uuid.uuid3(uuid.NAMESPACE_DNS, self.host_name))
 
+
     def generate_timestamp(self):
         localtime = time.localtime()
         self.timestamp = '%02d' % localtime[4] + '-%02d' % localtime[5]
@@ -40,9 +43,11 @@ class MessagePackage:
     def get_uuid(self):
         return self.host_id
 
+
     def set_uuid(self, uuid):
         self.host_id = uuid
 
     @classmethod
     def generate_uuid(cls, host_name):
         return str(uuid.uuid3(uuid.NAMESPACE_DNS, host_name))
+

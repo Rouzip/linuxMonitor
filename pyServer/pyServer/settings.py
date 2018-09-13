@@ -25,7 +25,9 @@ SECRET_KEY = 'y@t36drvw*-^zma$)#(*)@h7p*5olmliyg_51jd(pwp=_j*(06'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
+
 ALLOWED_HOSTS = ['192.168.43.30', '192.168.43.252', 'localhost', '127.0.0.1']
+
 
 
 # Application definition
@@ -119,6 +121,7 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
+
 WEBSOCKET_ACCEPT_ALL = True
 
 MIDDLEWARE_CLASSES = ['dwebsocket.middleware.WebSocketMiddleware', 'pyServer.DisableCSRF.DisableCSRF']
@@ -126,3 +129,4 @@ MIDDLEWARE_CLASSES = ['dwebsocket.middleware.WebSocketMiddleware', 'pyServer.Dis
 STATICFILES_DIRS = (
     os.path.join(BASE_DIR, 'static/'),
 )
+

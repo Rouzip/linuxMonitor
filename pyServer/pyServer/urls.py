@@ -18,6 +18,7 @@ from django.urls import path
 from . import dealHttp
 from django.conf.urls import url
 from . import dealWebsocket
+
 from . import settings
 
 
@@ -32,6 +33,7 @@ urlpatterns = [
     url(r'^connect$', dealHttp.connect),
     # 静态资源配置
     # url( r'^static/(?P<path>.*)$', 'django.views.static.serve',{ 'document_root': settings.STATIC_URL }),
+
     url(r'^$', dealHttp.receive),
     # websocket请求
     url(r'websocket', dealWebsocket.echo)
