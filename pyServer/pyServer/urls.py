@@ -19,11 +19,20 @@ from . import dealHttp
 from django.conf.urls import url
 from . import dealWebsocket
 
+from . import settings
+
+
 urlpatterns = [
     # http请求
     url(r'^hello$', dealHttp.hello),
     url(r'^data$', dealHttp.receive),
     url(r'^post$', dealHttp.post),
+    url(r'^index$', dealHttp.index),
+    url(r'^$', dealHttp.index),
+    url(r'^disconnect$', dealHttp.disconnect),
+    url(r'^connect$', dealHttp.connect),
+    # 静态资源配置
+    # url( r'^static/(?P<path>.*)$', 'django.views.static.serve',{ 'document_root': settings.STATIC_URL }),
 
     url(r'^$', dealHttp.receive),
     # websocket请求

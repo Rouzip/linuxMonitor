@@ -4,7 +4,6 @@ import uuid
 import time
 
 
-# node = uuid.getnode()
 
 
 class MessagePackage:
@@ -16,7 +15,7 @@ class MessagePackage:
     process = ""
     timestamp = ""
 
-    def __init__(self, mtype, host_name, memery, cpu, process):
+    def __init__(self, mtype, host_name=None, memery=None, cpu=None, process=None):
         self.mtype = mtype
         self.host_name = host_name
         self.memery = memery
@@ -28,11 +27,14 @@ class MessagePackage:
     def to_json(self):
         dictionary = {'type': self.mtype, 'time': self.timestamp,
                       'hostid': self.host_id, 'hostname': self.host_name,
-                      'cpu': self.cpu, 'mem': self.memery, 'process': self.process}
-        return simplejson.load(dictionary)
+                      'cpu': self.cpu, 'mem': self.memery, 'processes': self.process}
+        return simplejson.dumps(dictionary)
 
     def generate_hostuuid(self):
-        self.host_id = str(uuid.uuid1(uuid.getnode()+(int)(random.random()*100000)))
+        if self.host_name == None:
+            return
+        self.host_id = str(uuid.uuid3(uuid.NAMESPACE_DNS, self.host_name))
+
 
     def generate_timestamp(self):
         localtime = time.localtime()
@@ -41,6 +43,11 @@ class MessagePackage:
     def get_uuid(self):
         return self.host_id
 
+
+    def set_uuid(self, uuid):
+        self.host_id = uuid
+
     @classmethod
-    def generate_uuid(cls):
-        return str(uuid.uuid1(uuid.getnode()+(int)(random.random()*100000)))
+    def generate_uuid(cls, host_name):
+        return str(uuid.uuid3(uuid.NAMESPACE_DNS, host_name))
+
