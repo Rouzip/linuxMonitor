@@ -14,7 +14,7 @@
 #include <pthread.h>
 
 #define MYPORT 8124
-#define MAXLOOP 1000
+#define MAXLOOP 10000
 
 int loop=0;
 char result[40960];
@@ -66,7 +66,7 @@ void getMemory() {
 void getPs()
 {
 
-    char strCommand1[256] ="top bn1 |head -n 106|grep -E \"" ;
+    char strCommand1[256] ="top bn1 |head -n 56|grep -E \"" ;
     char strCommand2[256] ="|root\" |awk 'BEGIN{print\"{\\\"processInfo\\\":[\"}  {print \"{\\\"name\\\":\\\"\" $12 \"\\\",\\\"user\\\":\\\"\"  $2 \"\\\",\\\"id\\\":\\\"\" $1 \"\\\",\\\"cpu\\\":\\\"\" $9 \"\\\",\\\"mem\\\":\\\"\" $10 \"\\\"},\"}   END{ print \"],\"}' >info.json";
     char strCommand3[50];
     char getUser[20]="echo \"$USER\"";
@@ -180,7 +180,7 @@ void socketSend() {
         getMemory();
         read_file("info.json",result);
         int cnm;
-        cnm=send(sock_cli, result, strlen(result), MSG_DONTWAIT);
+        cnm=send(sock_cli, result, strlen(result), 0);
         if(cnm<0){
             perror("\n\n淦\n\n");
             break;
@@ -198,14 +198,14 @@ void socketSend() {
 
 int main() {
     
-    int flags = fcntl(sock_cli, F_GETFL, 0);                       //获取文件的flags值。
-    fcntl(sock_cli, F_SETFL, flags | O_NONBLOCK);              //设置成非阻塞模式；
+    // int flags = fcntl(sock_cli, F_GETFL, 0);                       //获取文件的flags值。
+    // fcntl(sock_cli, F_SETFL, flags | O_NONBLOCK);              //设置成非阻塞模式；
     memset(&buf,0, sizeof(buf));
     sock_cli = socket(AF_INET, SOCK_STREAM, 0);
     memset(&servaddr, 0, sizeof(servaddr));
     servaddr.sin_family = AF_INET;
     servaddr.sin_port = htons(MYPORT);  ///服务器端口
-    servaddr.sin_addr.s_addr = inet_addr("192.168.43.30");  ///服务器ip
+    servaddr.sin_addr.s_addr = inet_addr("192.168.232.143");  ///服务器ip
     //连接服务器，成功返回0，错误返回-1
     socketSend();
 
