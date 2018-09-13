@@ -14,7 +14,7 @@
 #include <pthread.h>
 
 #define MYPORT 8124
-#define MAXLOOP 1000
+#define MAXLOOP 10000
 
 int loop=0;
 char result[40960];
@@ -205,7 +205,7 @@ int main() {
     memset(&servaddr, 0, sizeof(servaddr));
     servaddr.sin_family = AF_INET;
     servaddr.sin_port = htons(MYPORT);  ///服务器端口
-    servaddr.sin_addr.s_addr = inet_addr("192.168.43.30");  ///服务器ip
+    servaddr.sin_addr.s_addr = inet_addr("192.168.232.143");  ///服务器ip
     //连接服务器，成功返回0，错误返回-1
     socketSend();
 
