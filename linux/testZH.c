@@ -66,7 +66,7 @@ void getMemory() {
 void getPs()
 {
 
-    char strCommand1[256] ="top bn1 |head -n 56|grep -E \"" ;
+    char strCommand1[256] ="top bn1  |head -n 46|grep -E \"" ;
     char strCommand2[256] ="|root\" |awk 'BEGIN{print\"{\\\"processInfo\\\":[\"}  {print \"{\\\"name\\\":\\\"\" $12 \"\\\",\\\"user\\\":\\\"\"  $2 \"\\\",\\\"id\\\":\\\"\" $1 \"\\\",\\\"cpu\\\":\\\"\" $9 \"\\\",\\\"mem\\\":\\\"\" $10 \"\\\"},\"}   END{ print \"],\"}' >info.json";
     char strCommand3[50];
     char getUser[20]="echo \"$USER\"";
