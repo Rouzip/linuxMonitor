@@ -33,7 +33,7 @@ windows：王浩东、樊培源
 
 ### protocal
 
-```json
+```javascript
 # 前后端交互协议
 # 为每个linux主机启动不同的定时器，即异步处理
 # 默认百分数没有百分号
@@ -62,7 +62,5 @@ windows：王浩东、樊培源
     id: 'pid',
     'hostid': 'uuid'
 }
-
-# linux与windows交互协议
 ```
 
